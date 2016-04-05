@@ -40,10 +40,7 @@ func createSongHandler(w http.ResponseWriter, req *http.Request) {
   }
 
   // Save song
-  if err := models.DB.Create(&song); err != nil {
-    panic(err)
-    return
-  }
+  models.DB.Create(&song)
 
   // Create response
   json.NewEncoder(w).Encode(&song)

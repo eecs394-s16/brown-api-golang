@@ -20,6 +20,6 @@ func GetRouter() *negroni.Negroni {
 }
 
 func configureResponseMiddleware(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
-  next(w, req)
   w.Header().Set("Content-Type", "application/json")
+  next(w, req)
 }
