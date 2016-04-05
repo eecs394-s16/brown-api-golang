@@ -1,14 +1,10 @@
 package main
 
 import (
-  _ "fmt"
-  "github.com/eecs394-s16/brown-api-golang/models"
-  _ "github.com/jinzhu/gorm/dialects/postgres"
+  "github.com/eecs394-s16/brown-api-golang/routes"
 )
 
-
-
 func main() {
-  db := models.GetDB()
-  
+  n  := routes.GetRouter()
+  n.Run(":3000")
 }
