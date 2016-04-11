@@ -16,7 +16,7 @@ func addSongRoutes(r *mux.Router) {
   r.HandleFunc("/songs", createSongHandler).Methods("POST")
 
   r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("POST") // TODO
-  //r.HandleFunc("/songs/{song_id}").Methods("DELETE") // TODO
+  r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE") // TODO
 }
 
 // TODO
@@ -29,6 +29,7 @@ func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
   // Delete song
 
   // Return response
+   w.Write([]byte("delete songs!\n"))
 }
 
 func getSongsHandler(w http.ResponseWriter, req *http.Request) {
