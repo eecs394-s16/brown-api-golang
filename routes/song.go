@@ -29,7 +29,7 @@ func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
   // Delete song
 
   // Return response
-   w.Write([]byte("delete songs!\n"))
+   w.Write([]byte("delete songs2!\n"))
 }
 
 func getSongsHandler(w http.ResponseWriter, req *http.Request) {
