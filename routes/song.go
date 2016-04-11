@@ -15,7 +15,7 @@ func addSongRoutes(r *mux.Router) {
   r.HandleFunc("/songs", getSongsHandler).Methods("GET")
   r.HandleFunc("/songs", createSongHandler).Methods("POST")
 
-  //r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("POST") // TODO
+  r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("POST") // TODO
   //r.HandleFunc("/songs/{song_id}").Methods("DELETE") // TODO
 }
 
