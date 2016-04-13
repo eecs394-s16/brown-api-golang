@@ -25,5 +25,10 @@ func configureResponseMiddleware(w http.ResponseWriter, req *http.Request, next 
   w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   w.Header().Set("Access-Control-Allow-Headers",
     "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+    // Stop here for a Preflighted OPTIONS request.
+  if req.Method == "OPTIONS" {
+    return
+  }
   next(w, req)
 }
