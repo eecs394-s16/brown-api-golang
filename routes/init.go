@@ -22,7 +22,7 @@ func GetRouter() *negroni.Negroni {
 func configureResponseMiddleware(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
   w.Header().Set("Content-Type", "application/json")
   w.Header().Set("Access-Control-Allow-Origin", "*")
-  w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+  w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
   w.Header().Set("Access-Control-Allow-Headers",
     "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
   next(w, req)
