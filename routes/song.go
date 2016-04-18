@@ -16,6 +16,7 @@ func addSongRoutes(r *mux.Router) {
   r.HandleFunc("/songs", createSongHandler).Methods("POST")
 
   r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("PUT")
+  r.HandleFunc("/songs/{song_id}/downvote", downvoteSongHandler).Methods("PUT")
   r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE")
 }
 
@@ -49,6 +50,35 @@ func createSongHandler(w http.ResponseWriter, req *http.Request) {
 
   // Save song
   models.DB.Create(&song)
+
+  // Get songs sorted
+  var songs []models.Song
+  models.DB.Order("votes desc").Find(&songs)
+
+  // Return songs sorted in response
+  data := make(map[string]interface{})
+  data["songs"] = songs
+  json.NewEncoder(w).Encode(&data)
+}
+
+func downvoteSongHandler(w http.ResponseWriter, req *http.Request) {
+  song_id := mux.Vars(req)["song_id"]
+
+  var song models.Song
+  models.DB.First(&song, song_id)
+
+  // Check that song exists
+  if models.DB.NewRecord(song) {
+    fmt.Println("cannot find song")
+    return
+  }
+  fmt.Println("found song")
+
+  // -1 to score
+  song.Votes--
+
+  // Save song
+  models.DB.Save(&song)
 
   // Get songs sorted
   var songs []models.Song
