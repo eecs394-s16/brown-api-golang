@@ -9,7 +9,8 @@ import (
 func main() {
   // Add models here...
   _models := []interface{} {
-    &models.Song{}}
+    &models.Song{}
+    &models.Playlist{}}
 
   fmt.Println("\nDropping tables...")
   for _, model := range _models {

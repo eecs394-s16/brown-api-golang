@@ -20,6 +20,8 @@ func addSongRoutes(r *mux.Router) {
 }
 
 func getSongsHandler(w http.ResponseWriter, req *http.Request) {
+  setStatusCode(req, 404)
+  panic("cant ifnd")
   // Get songs
   var songs []models.Song
   models.DB.Order("votes desc").Find(&songs)
@@ -27,7 +29,8 @@ func getSongsHandler(w http.ResponseWriter, req *http.Request) {
   // Create response
   data := make(map[string]interface{})
   data["songs"] = songs
-  json.NewEncoder(w).Encode(&data)
+
+  setData(req, data)
 }
 
 func createSongHandler(w http.ResponseWriter, req *http.Request) {
