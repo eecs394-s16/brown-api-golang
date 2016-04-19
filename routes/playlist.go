@@ -1,34 +1,81 @@
 package routes
 
 import (
-  _ "encoding/json"
+  "encoding/json"
   "net/http"
+  "strconv"
   "fmt"
 
   "github.com/gorilla/mux"
-  "github.com/gorilla/context"
 
   "github.com/eecs394-s16/brown-api-golang/models"
 
 )
 
 func addPlaylistRoutes(r *mux.Router) {
-  r.HandleFunc("/playlists/{playlist_id}", getSongsHandler).Methods("GET")
+  r.HandleFunc("/playlists/{playlist_id}", getPlaylistHandler).Methods("GET")
+  r.HandleFunc("/playlists", createPlaylistHandler).Methods("POST")
+  r.HandleFunc("/playlists/{playlist_id}/songs", addSongToPlaylistHandler).Methods("POST")
+
+  // Delete playlist
+  // Update playlist
 }
 
 func getPlaylistHandler(w http.ResponseWriter, req *http.Request) {
-  playlist_id := mux.Vars(req)["playlist_id"]
+  playlist_id, _ := strconv.Atoi(mux.Vars(req)["playlist_id"])
 
-  // Get playlist
+  // Get playlists
+  playlist := models.PlaylistFromID(playlist_id)
+
+  setData(req, playlist.GetData())
+}
+
+func createPlaylistHandler(w http.ResponseWriter, req *http.Request) {
+  // Get JSON request data
+  decoder := json.NewDecoder(req.Body)
   var playlist models.Playlist
-  models.DB.First(&playlist, playlist_id)
-
-  // Check that song exists
-  if models.DB.NewRecord(playlist) {
-    fmt.Println("cannot find song")
+  err := decoder.Decode(&playlist)
+  if err != nil {
+    panic(HttpError{400, err.Error()})
     return
   }
-  fmt.Println("found song")
 
-  context.Set(req, "data", playlist)
+  // Save playlist
+  models.DB.Create(&playlist)
+
+  // Return playlist in response
+  setData(req, playlist.GetData())
+}
+
+func addSongToPlaylistHandler(w http.ResponseWriter, req *http.Request) {
+  playlist_id, _ := strconv.Atoi(mux.Vars(req)["playlist_id"])
+
+  // Get JSON request data
+  decoder := json.NewDecoder(req.Body)
+
+  // Get playlist from ID
+  playlist := models.PlaylistFromID(playlist_id)
+  fmt.Println(playlist)
+
+  // Create song
+  var song models.Song
+  err := decoder.Decode(&song)
+  if err != nil {
+    panic(err)
+    return
+  }
+  // Initialize votes value
+  song.Votes = 1
+  // Save song
+  models.DB.Create(&song)
+
+  fmt.Println(song)
+
+  // Add song to playlist
+  models.DB.Model(&playlist).Association("Songs").Append(song)
+
+  // Save playlist
+  models.DB.Save(&playlist)
+
+  setData(req, playlist.GetData())
 }

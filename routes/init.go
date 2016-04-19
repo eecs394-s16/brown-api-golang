@@ -3,12 +3,20 @@ package routes
 import (
   "net/http"
   "encoding/json"
+  "fmt"
 
   "github.com/gorilla/mux"
   "github.com/gorilla/context"
 
   "github.com/codegangsta/negroni"
+
+  "github.com/eecs394-s16/brown-api-golang/models"
 )
+
+type HttpError struct {
+  status_code int
+  error       string
+}
 
 func GetRouter() *negroni.Negroni {
   n  := negroni.New()
@@ -20,6 +28,7 @@ func GetRouter() *negroni.Negroni {
   r  := mux.NewRouter()
   r.KeepContext = true
   addSongRoutes(r)
+  addPlaylistRoutes(r)
   n.UseHandler(r)
 
   // Add handle response middleware
@@ -67,20 +76,20 @@ func recoveryMiddleware() negroni.HandlerFunc {
   return func(w http.ResponseWriter, req *http.Request, next http.HandlerFunc) {
     defer func() {
       if err := recover(); err != nil {
+        fmt.Println(err)
+        http_err := err.(models.HttpError)
+        fmt.Println(http_err)
         // Get status code
-        var status int
-        if temp_status := getStatusCode(req); temp_status != nil {
-          status = temp_status.(int)
-        } else {
-          status = 500
-        }
+        status := 500
+        status = http_err.Status_code
+
         // Set status code
         w.WriteHeader(status)
 
         // Write error back
         data := make(map[string]interface{})
-        data["status_code"] = status
-        data["error"] = err
+        data["status_code"] = http_err.Status_code
+        data["error"]       = http_err.Error
         json.NewEncoder(w).Encode(&data)
       }
     }()

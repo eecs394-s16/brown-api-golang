@@ -7,6 +7,17 @@ import (
   _ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
+type HttpError struct {
+  Status_code int
+  Error       string
+}
+
+type Model struct {
+  ID uint `gorm:"primary_key" json:"id"`
+}
+
+
+
 var DB *gorm.DB
 
 func init() {

@@ -4,11 +4,11 @@ import (
   "encoding/json"
   "net/http"
   "fmt"
+  "strconv"
 
   "github.com/gorilla/mux"
 
   "github.com/eecs394-s16/brown-api-golang/models"
-
 )
 
 func addSongRoutes(r *mux.Router) {
@@ -17,11 +17,12 @@ func addSongRoutes(r *mux.Router) {
 
   r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("PUT")
   r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE")
+
+  // Delete song
+  // Upvote song
 }
 
 func getSongsHandler(w http.ResponseWriter, req *http.Request) {
-  setStatusCode(req, 404)
-  panic("cant ifnd")
   // Get songs
   var songs []models.Song
   models.DB.Order("votes desc").Find(&songs)
@@ -61,7 +62,7 @@ func createSongHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
-  song_id := mux.Vars(req)["song_id"]
+  song_id, _ := strconv.Atoi(mux.Vars(req)["song_id"])
 
   var song models.Song
   models.DB.First(&song, song_id)
@@ -90,18 +91,10 @@ func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
-  song_id := mux.Vars(req)["song_id"]
+  song_id, _ := strconv.Atoi(mux.Vars(req)["song_id"])
 
   // Get song by id
-  var song models.Song
-  models.DB.First(&song, song_id)
-
-  // Check that song exists
-  if models.DB.NewRecord(song) {
-    fmt.Println("cannot find song")
-    return
-  }
-  fmt.Println("found song")
+  song := models.SongFromID(song_id)
 
   // Delete song
   models.DB.Delete(&song)
