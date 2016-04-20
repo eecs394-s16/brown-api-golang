@@ -3,7 +3,6 @@ package routes
 import (
   "encoding/json"
   "net/http"
-  "fmt"
   "strconv"
 
   "github.com/gorilla/mux"
@@ -12,14 +11,17 @@ import (
 )
 
 func addSongRoutes(r *mux.Router) {
+  // Get all songs
   r.HandleFunc("/songs", getSongsHandler).Methods("GET")
+
+  // Create new song
   r.HandleFunc("/songs", createSongHandler).Methods("POST")
 
+  // Upvote song
   r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("PUT")
-  r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE")
 
   // Delete song
-  // Upvote song
+  r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE")
 }
 
 func getSongsHandler(w http.ResponseWriter, req *http.Request) {
@@ -64,15 +66,7 @@ func createSongHandler(w http.ResponseWriter, req *http.Request) {
 func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
   song_id, _ := strconv.Atoi(mux.Vars(req)["song_id"])
 
-  var song models.Song
-  models.DB.First(&song, song_id)
-
-  // Check that song exists
-  if models.DB.NewRecord(song) {
-    fmt.Println("cannot find song")
-    return
-  }
-  fmt.Println("found song")
+  song := models.SongFromID(song_id)
 
   // +1 to score
   song.Votes++
@@ -80,14 +74,8 @@ func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
   // Save song
   models.DB.Save(&song)
 
-  // Get songs sorted
-  var songs []models.Song
-  models.DB.Order("votes desc").Find(&songs)
-
-  // Return songs sorted in response
-  data := make(map[string]interface{})
-  data["songs"] = songs
-  json.NewEncoder(w).Encode(&data)
+  // Return song in response
+  setData(req, song.GetData())
 }
 
 func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
@@ -103,5 +91,5 @@ func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
   data["deleted"] = song_id
 
   // Return response
-  json.NewEncoder(w).Encode(&data)
+  setData(req, data)
 }

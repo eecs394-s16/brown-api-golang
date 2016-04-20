@@ -17,9 +17,21 @@ func (playlist Playlist) GetData() interface{} {
   data := make(map[string]interface{})
   data["name"]  = playlist.Name
   data["songs"] = songs
-  data["id"] = playlist.ID
+  data["id"]   = playlist.ID
 
   return data
+}
+
+func (playlist *Playlist) Delete() {
+  // Loop through each song in playlist and delete
+  var songs []Song
+  DB.Model(&playlist).Association("Songs").Find(&songs)
+  for _, song := range songs {
+    DB.Delete(&song)
+  }
+
+  // Delete playlist
+  DB.Delete(&playlist)
 }
 
 func PlaylistFromID(id int) Playlist {
