@@ -20,6 +20,9 @@ func addSongRoutes(r *mux.Router) {
   // Upvote song
   r.HandleFunc("/songs/{song_id}/upvote", upvoteSongHandler).Methods("PUT")
 
+  // Downvote song
+  r.HandleFunc("/songs/{song_id}/downvote", downvoteSongHandler).Methods("PUT")
+
   // Delete song
   r.HandleFunc("/songs/{song_id}", deleteSongHandler).Methods("DELETE")
 }
@@ -70,6 +73,21 @@ func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
 
   // +1 to score
   song.Votes++
+
+  // Save song
+  models.DB.Save(&song)
+
+  // Return song in response
+  setData(req, song.GetData())
+}
+
+func downvoteSongHandler(w http.ResponseWriter, req *http.Request) {
+  song_id, _ := strconv.Atoi(mux.Vars(req)["song_id"])
+
+  song := models.SongFromID(song_id)
+
+  // +1 to score
+  song.Votes--
 
   // Save song
   models.DB.Save(&song)

@@ -1,3 +1,4 @@
+These routes are **not live** yet! Keep using previous routes.
 
 # Table of Contents
 1. Playlist Routes
@@ -27,7 +28,21 @@ POST /playlists
 POST /playlists/:playlist_id/songs
 
 // Request
-{}
+{
+  "title": <string>,
+  "artist": <string>,
+  "album": <string>,
+  "spotify_id": <string>
+}
+
+// Response
+{
+  "id": <int>,
+  "title": <string>,
+  "artist": <string>,
+  "album": <string>,
+  "spotify_id": <string>
+}
 
 // Response
 {}
@@ -40,23 +55,11 @@ POST /playlists/:playlist_id/songs
 POST /songs/:song_id/like
 
 // Request
-{
-  "title": <string>,
-  "artist": <string>,
-  "album": <string>
-}
+{}
 
 // Response
-{
-  "songs": [
-    {
-      "ID": <int>,
-      "title": <string>,
-      "artist": <string>,
-      "album": <string>
-    }, {...}, ...
-  ]
-}
+{}
+
 ```
 
 ---
@@ -66,21 +69,8 @@ POST /songs/:song_id/like
 POST /songs/:song_id/like
 
 // Request
-{
-  "title": <string>,
-  "artist": <string>,
-  "album": <string>
-}
+{}
 
 // Response
-{
-  "songs": [
-    {
-      "ID": <int>,
-      "title": <string>,
-      "artist": <string>,
-      "album": <string>
-    }, {...}, ...
-  ]
-}
+{}
 ```
