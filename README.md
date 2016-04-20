@@ -21,7 +21,7 @@ POST /playlists
 // Response
 {}
 ```
----
+
 #### Add Song to Playlist
 ```json
 // URL
@@ -62,7 +62,6 @@ POST /songs/:song_id/like
 
 ```
 
----
 #### Delete Song
 ```json
 // URL
