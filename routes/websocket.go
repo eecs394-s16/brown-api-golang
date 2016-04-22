@@ -103,7 +103,7 @@ func wsPlaylistHandler(w http.ResponseWriter, req *http.Request) {
       return
     }
     fmt.Println(message)
-    c.WriteJSON("test")
+    c.WriteJSON(message)
   }
 
 }
