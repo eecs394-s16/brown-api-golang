@@ -5,7 +5,6 @@ import (
   "net/http"
   "fmt"
   "strconv"
-  "time"
 
   "github.com/gorilla/mux"
   "github.com/gorilla/websocket"
@@ -24,14 +23,6 @@ var playlist_update_chan = make(chan int)
 
 func addWebsocketRoutes(r *mux.Router) {
   go playlistConnectionManager()
-
-  go func() {
-    for {
-      time.Sleep(1*time.Second)
-      playlist_update_chan <- 1
-      fmt.Println("test")
-    }
-  }()
 
   r.HandleFunc("/ws/playlists/{playlist_id}", wsPlaylistHandler)
 }
