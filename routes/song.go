@@ -78,6 +78,7 @@ func upvoteSongHandler(w http.ResponseWriter, req *http.Request) {
   models.DB.Save(&song)
 
   // Return song in response
+  playlist_update_chan <- song.PlaylistID
   setData(req, song.GetData())
 }
 
@@ -101,6 +102,7 @@ func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
 
   // Get song by id
   song := models.SongFromID(song_id)
+  playlist_id := song.PlaylistID
 
   // Delete song
   models.DB.Delete(&song)
@@ -109,5 +111,6 @@ func deleteSongHandler(w http.ResponseWriter, req *http.Request) {
   data["deleted"] = song_id
 
   // Return response
+  playlist_update_chan <- playlist_id
   setData(req, data)
 }

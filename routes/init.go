@@ -29,6 +29,7 @@ func GetRouter() *negroni.Negroni {
   r.KeepContext = true
   addSongRoutes(r)
   addPlaylistRoutes(r)
+  addWebsocketRoutes(r)
   n.UseHandler(r)
 
   // Add handle response middleware

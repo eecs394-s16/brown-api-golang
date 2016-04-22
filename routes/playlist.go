@@ -85,6 +85,7 @@ func addSongToPlaylistHandler(w http.ResponseWriter, req *http.Request) {
   // Save playlist
   models.DB.Save(&playlist)
 
+  playlist_update_chan <- playlist_id
   setData(req, playlist.GetData())
 }
 
