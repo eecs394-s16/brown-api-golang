@@ -16,10 +16,22 @@ These routes are **not live** yet! Keep using previous routes.
 POST /playlists
 
 // Request
-{}
+{
+  "name": <string>
+}
 
 // Response
-{}
+{
+  "id": <int>,
+  "name": <string>,
+  "songs": [{
+      "id": <int>,
+      "title": <string>,
+      "artist": <string>,
+      "album": <string>,
+      "spotify_id": <string>
+  }, ...]
+}
 ```
 
 #### Add Song to Playlist
@@ -43,9 +55,6 @@ POST /playlists/:playlist_id/songs
   "album": <string>,
   "spotify_id": <string>
 }
-
-// Response
-{}
 ```
 
 ## Song Routes

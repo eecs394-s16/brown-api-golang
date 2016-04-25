@@ -17,16 +17,22 @@ type newPlaylistConn struct {
   playlist_id int
 }
 
+// Define Channels
+// ================
 var playlist_add_chan    = make(chan newPlaylistConn)
 var playlist_rem_chan    = make(chan newPlaylistConn)
 var playlist_update_chan = make(chan int)
 
+// Add Websocket Routes to Router
+// ===============================
 func addWebsocketRoutes(r *mux.Router) {
   go playlistConnectionManager()
 
   r.HandleFunc("/ws/playlists/{playlist_id}", wsPlaylistHandler)
 }
 
+// Define Websocket Upgrader
+// ==========================
 var upgrader = websocket.Upgrader{
     ReadBufferSize:  1024,
     WriteBufferSize: 1024,
@@ -35,6 +41,8 @@ var upgrader = websocket.Upgrader{
     },
 }
 
+// Connection Manager for Playlists
+// =================================
 func playlistConnectionManager() {
   connection_map := make(map[int][]*websocket.Conn)
   for {
@@ -72,6 +80,8 @@ func playlistConnectionManager() {
   }
 }
 
+// Playlist Websocket Route
+// =========================
 func wsPlaylistHandler(w http.ResponseWriter, req *http.Request) {
   playlist_id, _ := strconv.Atoi(mux.Vars(req)["playlist_id"])
   fmt.Println(playlist_id)
