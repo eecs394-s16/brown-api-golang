@@ -2,6 +2,7 @@
 1. Playlist Routes
   * [Create New Playlist](#create-new-playlist)
   * [Add Song To Playlist](#add-song-to-playlist)
+  * [Pop Playlist](#pop-playlist)
 2. Song Routes
   * [Like Song](#like-song)
   * [Delete Song](#delete-song)
@@ -22,12 +23,21 @@ POST /playlists
 {
   "id": <int>,
   "name": <string>,
+  "active_song": {
+    "id": <int>,
+    "title": <string>,
+    "artist": <string>,
+    "album": <string>,
+    "album_art": <string>,
+    "spotify_id": <string>
+  }
   "songs": [{
-      "id": <int>,
-      "title": <string>,
-      "artist": <string>,
-      "album": <string>,
-      "spotify_id": <string>
+    "id": <int>,
+    "title": <string>,
+    "artist": <string>,
+    "album": <string>,
+    "album_art": <string>,
+    "spotify_id": <string>
   }, ...]
 }
 ```
@@ -42,6 +52,7 @@ POST /playlists/:playlist_id/songs
   "title": <string>,
   "artist": <string>,
   "album": <string>,
+  "album_art": <string>,
   "spotify_id": <string>
 }
 
@@ -51,7 +62,39 @@ POST /playlists/:playlist_id/songs
   "title": <string>,
   "artist": <string>,
   "album": <string>,
+  "album_art": <string>,
   "spotify_id": <string>
+}
+```
+
+#### Pop Playlist
+```json
+// URL
+PUT /playlists/:playlist_id/pop
+
+// Request
+{}
+
+// Response
+{
+  "id": <int>,
+  "name": <string>,
+  "active_song": {
+    "id": <int>,
+    "title": <string>,
+    "artist": <string>,
+    "album": <string>,
+    "album_art": <string>,
+    "spotify_id": <string>
+  }
+  "songs": [{
+    "id": <int>,
+    "title": <string>,
+    "artist": <string>,
+    "album": <string>,
+    "album_art": <string>,
+    "spotify_id": <string>
+  }, ...]
 }
 ```
 

@@ -6,12 +6,14 @@ import (
 
 type Song struct {
   Model
-  Title      string `json:"title"`
-  Artist     string `json:"artist"`
-  Album      string `json:"album"`
-  SpotifyID  string `json:"spotify_id"`
-  Votes      int    `json:"votes"`
-  PlaylistID uint   `json:"playlist_id"`
+  Title      string       `json:"title"`
+  Artist     string       `json:"artist"`
+  Album      string       `json:"album"`
+  AlbumArt   string       `json:"album_art"`
+  SpotifyID  string       `json:"spotify_id"`
+  Votes      int          `json:"votes"`
+  PlaylistID uint         `json:"playlist_id"`
+  ActivePlaylistID uint   `json:"active_playlist_id"`
 }
 
 func (song Song) GetData() interface{} {

@@ -26,6 +26,9 @@ func addPlaylistRoutes(r *mux.Router) {
   // Delete playlist
   r.HandleFunc("/playlists/{playlist_id}", deletePlaylistHandler).Methods("DELETE")
 
+  // Pop playlist
+  r.HandleFunc("/playlists/{playlist_id}/pop", popPlaylistHandler).Methods("PUT")
+
   // Update playlist
   // TODO
 }
@@ -100,5 +103,36 @@ func deletePlaylistHandler(w http.ResponseWriter, req *http.Request) {
 
   data := make(map[string]interface{})
   data["deleted"] = playlist_id
+
+  playlist_update_chan <- playlist_id
   setData(req, data)
+}
+
+func popPlaylistHandler(w http.ResponseWriter, req *http.Request) {
+  playlist_id, _ := strconv.Atoi(mux.Vars(req)["playlist_id"])
+
+  // Get playlist from ID
+  playlist := models.PlaylistFromID(playlist_id)
+
+  // Get old and new active song
+  var old_active_song models.Song
+  var new_active_song models.Song
+  models.DB.Model(&playlist).Association("ActiveSong").Find(&old_active_song)
+  models.DB.Order("Votes desc").Limit(1).Model(&playlist).Association("Songs").Find(&new_active_song)
+
+  // Put old active song back in queue with zero votes
+  if !models.DB.NewRecord(old_active_song) {
+    old_active_song.Votes = 0
+    models.DB.Save(&old_active_song)
+
+    models.DB.Model(&playlist).Association("Songs").Append(old_active_song)
+    models.DB.Model(&playlist).Association("ActiveSong").Delete(old_active_song)
+  }
+
+  // Set new active song
+  models.DB.Model(&playlist).Association("ActiveSong").Append(new_active_song)
+  models.DB.Model(&playlist).Association("Songs").Delete(new_active_song)
+
+  playlist_update_chan <- playlist_id
+  setData(req, playlist.GetData())
 }
