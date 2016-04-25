@@ -1,5 +1,3 @@
-These routes are **not live** yet! Keep using previous routes.
-
 # Table of Contents
 1. Playlist Routes
   * [Create New Playlist](#create-new-playlist)
