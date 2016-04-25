@@ -64,7 +64,8 @@ func playlistConnectionManager() {
       playlist := models.PlaylistFromID(playlist_id)
 
       for _, c := range connection_map[playlist_id] {
-        c.WriteJSON(&playlist)
+        data := playlist.GetData()
+        c.WriteJSON(&data)
       }
     }
 
