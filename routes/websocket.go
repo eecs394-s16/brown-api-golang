@@ -92,9 +92,15 @@ func wsPlaylistHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
   defer func() {
+    if err := recover(); err != nil {
+        c.WriteJSON(err)
+    }
     playlist_rem_chan <- newPlaylistConn{c, playlist_id}
     c.Close()
   }()
+
+  // Check if playlist exists
+  models.PlaylistFromID(playlist_id)
 
   // Add new connection to playlistConnectionManager
   playlist_add_chan <- newPlaylistConn{c, playlist_id}
