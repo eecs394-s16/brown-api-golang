@@ -27,6 +27,7 @@ func GetRouter() *negroni.Negroni {
 
   r  := mux.NewRouter()
   r.KeepContext = true
+  r.StrictSlash(true)
   addSongRoutes(r)
   addPlaylistRoutes(r)
   addWebsocketRoutes(r)
